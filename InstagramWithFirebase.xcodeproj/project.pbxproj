@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4427029B1FAE45F000AB6669 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4427029A1FAE45F000AB6669 /* AppDelegate.swift */; };
-		4427029D1FAE45F000AB6669 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4427029C1FAE45F000AB6669 /* ViewController.swift */; };
+		4427029D1FAE45F000AB6669 /* SignUpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4427029C1FAE45F000AB6669 /* SignUpVC.swift */; };
 		442702A01FAE45F000AB6669 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4427029E1FAE45F000AB6669 /* Main.storyboard */; };
 		442702A21FAE45F000AB6669 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 442702A11FAE45F000AB6669 /* Assets.xcassets */; };
 		442702A51FAE45F000AB6669 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 442702A31FAE45F000AB6669 /* LaunchScreen.storyboard */; };
@@ -17,7 +17,7 @@
 /* Begin PBXFileReference section */
 		442702971FAE45F000AB6669 /* InstagramWithFirebase.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = InstagramWithFirebase.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4427029A1FAE45F000AB6669 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		4427029C1FAE45F000AB6669 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		4427029C1FAE45F000AB6669 /* SignUpVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpVC.swift; sourceTree = "<group>"; };
 		4427029F1FAE45F000AB6669 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		442702A11FAE45F000AB6669 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		442702A41FAE45F000AB6669 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -55,10 +55,10 @@
 			isa = PBXGroup;
 			children = (
 				4427029A1FAE45F000AB6669 /* AppDelegate.swift */,
-				4427029C1FAE45F000AB6669 /* ViewController.swift */,
+				4427029C1FAE45F000AB6669 /* SignUpVC.swift */,
+				442702A31FAE45F000AB6669 /* LaunchScreen.storyboard */,
 				4427029E1FAE45F000AB6669 /* Main.storyboard */,
 				442702A11FAE45F000AB6669 /* Assets.xcassets */,
-				442702A31FAE45F000AB6669 /* LaunchScreen.storyboard */,
 				442702A61FAE45F000AB6669 /* Info.plist */,
 			);
 			path = InstagramWithFirebase;
@@ -136,7 +136,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4427029D1FAE45F000AB6669 /* ViewController.swift in Sources */,
+				4427029D1FAE45F000AB6669 /* SignUpVC.swift in Sources */,
 				4427029B1FAE45F000AB6669 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
