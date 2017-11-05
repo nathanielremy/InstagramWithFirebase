@@ -72,7 +72,7 @@
 				4427029E1FAE45F000AB6669 /* Main.storyboard */,
 				442702A11FAE45F000AB6669 /* Assets.xcassets */,
 				442702A61FAE45F000AB6669 /* Info.plist */,
-				448DB7931FAF538600233DA1 /* GoogleService-Info.plist */,
+				44EE439D1FAF828500281467 /* SupportingFiles */,
 			);
 			path = InstagramWithFirebase;
 			sourceTree = "<group>";
@@ -83,6 +83,14 @@
 				448DB7911FAF484000233DA1 /* Extensions.swift */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		44EE439D1FAF828500281467 /* SupportingFiles */ = {
+			isa = PBXGroup;
+			children = (
+				448DB7931FAF538600233DA1 /* GoogleService-Info.plist */,
+			);
+			path = SupportingFiles;
 			sourceTree = "<group>";
 		};
 		4B2BFAA5359A0F5A029F2541 /* Pods */ = {

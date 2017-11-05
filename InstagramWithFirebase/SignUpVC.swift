@@ -7,16 +7,48 @@
 //
 
 import UIKit
+import Firebase
 
-class SignUpVC: UIViewController {
+class SignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     //MARK: Stored properties
     let plusPhotoButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(#imageLiteral(resourceName: "plus_photo").withRenderingMode(.alwaysOriginal), for: .normal)
+        button.addTarget(self, action: #selector(handlePlusPhoto), for: .touchUpInside)
         
         return button
     }()
+    
+    // present the image picker
+    @objc func handlePlusPhoto() {
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.allowsEditing = true
+        imagePickerController.delegate = self
+        present(imagePickerController, animated: true, completion: nil)
+    }
+    
+    // Set the selected image from image picker as profile picture
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        
+        if let editedImage = info["UIImagePickerControllerEditedImage"] as? UIImage {
+            
+            plusPhotoButton.setImage(editedImage.withRenderingMode(.alwaysOriginal), for: .normal)
+        
+        } else if let originalImage = info["UIImagePickerControllerOriginalImage"] as? UIImage {
+            
+            plusPhotoButton.setImage(originalImage.withRenderingMode(.alwaysOriginal), for: .normal)
+        }
+        
+        // Make button perfectly round
+        plusPhotoButton.layer.cornerRadius = plusPhotoButton.frame.width/2
+        plusPhotoButton.layer.masksToBounds = true
+        plusPhotoButton.layer.borderColor = UIColor.rgb(17, 154, 237).cgColor
+        plusPhotoButton.layer.borderWidth = 3
+        
+        // Dismiss image picker view
+        picker.dismiss(animated: true, completion: nil)
+    }
     
     let emailTextField: UITextField = {
         let tf = UITextField()
@@ -24,16 +56,18 @@ class SignUpVC: UIViewController {
         tf.backgroundColor = UIColor(white: 0, alpha: 0.03)
         tf.font = UIFont.systemFont(ofSize: 14)
         tf.borderStyle = .roundedRect
+        tf.addTarget(self, action: #selector(handleTextInputChange), for: .editingChanged)
         
         return tf
     }()
     
-    let userNameTextField: UITextField = {
+    let usernameTextField: UITextField = {
         let tf = UITextField()
         tf.placeholder = "Username"
         tf.backgroundColor = UIColor(white: 0, alpha: 0.03)
         tf.font = UIFont.systemFont(ofSize: 14)
         tf.borderStyle = .roundedRect
+        tf.addTarget(self, action: #selector(handleTextInputChange), for: .editingChanged)
         
         return tf
     }()
@@ -45,6 +79,7 @@ class SignUpVC: UIViewController {
         tf.backgroundColor = UIColor(white: 0, alpha: 0.03)
         tf.font = UIFont.systemFont(ofSize: 14)
         tf.borderStyle = .roundedRect
+        tf.addTarget(self, action: #selector(handleTextInputChange), for: .editingChanged)
         
         return tf
     }()
@@ -56,9 +91,65 @@ class SignUpVC: UIViewController {
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 5
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
+        button.addTarget(self, action: #selector(handleSignUp), for: .touchUpInside)
+        button.isEnabled = false
         
         return button
     }()
+    
+    @objc func handleTextInputChange() {
+        let isFormValid = emailTextField.text?.count ?? 0 > 0 && usernameTextField.text?.count ?? 0 > 0 && passwordTextField.text?.count ?? 0 > 0
+        
+        if isFormValid {
+            signUpButton.backgroundColor = UIColor.rgb(17, 154, 237)
+            signUpButton.isEnabled = true
+        } else {
+            signUpButton.backgroundColor = UIColor.rgb(149, 204, 244)
+            signUpButton.isEnabled = false
+        }
+    }
+    
+    @objc func handleSignUp() {
+        
+        // Verify input fields are filled out
+        guard let email = emailTextField.text, email.count > 0 else { return }
+        guard let username = usernameTextField.text, username.count > 0 else { return }
+        guard let password = passwordTextField.text, password.count > 0 else { return }
+        
+        // Attempt at creating a new user in Firebase
+        Auth.auth().createUser(withEmail: email, password: password) { (user, error) in
+            guard error == nil else { print("Error creating user: ", error!); return }
+            print("Successfully created user : ", user?.uid ?? "")
+            
+            guard let image = self.plusPhotoButton.imageView?.image, let imageData = UIImageJPEGRepresentation(image, 0.3) else { return }
+            
+            // Create random file name
+            let randomFileName = UUID().uuidString
+            Storage.storage().reference().child("profile_images").child(randomFileName).putData(imageData, metadata: nil, completion: { (metaData, error) in
+                
+                guard error == nil else { print("Error uploading profile image to Storage:", error!); return }
+                
+                guard let profileImageURL = metaData?.downloadURL()?.absoluteString else { return }
+                print("Successfuly uploaded profile image: ", profileImageURL)
+                
+                guard let uid = user?.uid else { return }
+                
+                let userValues = ["username" : username, "profileImageURL" : profileImageURL]
+                let values = [uid : userValues]
+                // Add user to Firebase database
+                Database.database().reference().child("users").updateChildValues(values, withCompletionBlock: { (error, databaseReference) in
+                    
+                    guard error == nil else { print("Failed to save user info into database", error!); return }
+                    
+                    print("Succesfully saved user info into database")
+                    
+                })
+                
+            })
+            
+            
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,7 +163,7 @@ class SignUpVC: UIViewController {
     
     fileprivate func setUpInputFields() {
         
-        let stackView = UIStackView(arrangedSubviews: [emailTextField, userNameTextField, passwordTextField, signUpButton])
+        let stackView = UIStackView(arrangedSubviews: [emailTextField, usernameTextField, passwordTextField, signUpButton])
         stackView.axis = .vertical
         stackView.distribution = .fillEqually
         stackView.spacing = 10
@@ -82,8 +173,8 @@ class SignUpVC: UIViewController {
     }
 }
 
+//MARK: Extensions
 extension UIView {
-    
     func anchor(top: NSLayoutYAxisAnchor?, left: NSLayoutXAxisAnchor?, bottom: NSLayoutYAxisAnchor?, right: NSLayoutXAxisAnchor?, paddingTop: CGFloat, paddingLeft: CGFloat, paddingBottom: CGFloat, paddingRight: CGFloat, width: CGFloat?, height: CGFloat?) {
         
         self.translatesAutoresizingMaskIntoConstraints = false
@@ -111,23 +202,5 @@ extension UIView {
         if let height = height {
             self.heightAnchor.constraint(equalToConstant: height).isActive = true
         }
-        
-      }
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
