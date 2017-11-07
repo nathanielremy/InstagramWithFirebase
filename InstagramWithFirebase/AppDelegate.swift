@@ -18,7 +18,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
+        // Configure app to work with Firebase GoogleService-Info.plist file)
         FirebaseApp.configure()
+        
+        // Set tabBarViewController as rootView
+        window = UIWindow()
+        guard let window = window else { fatalError() }
+        window.rootViewController = MainTabBarController()
         
         return true
     }

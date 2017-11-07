@@ -119,6 +119,7 @@ class SignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
         // Attempt at creating a new user in Firebase
         Auth.auth().createUser(withEmail: email, password: password) { (user, error) in
             guard error == nil else { print("Error creating user: ", error!); return }
+            
             print("Successfully created user : ", user?.uid ?? "")
             
             guard let image = self.plusPhotoButton.imageView?.image, let imageData = UIImageJPEGRepresentation(image, 0.3) else { return }
@@ -130,7 +131,7 @@ class SignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
                 guard error == nil else { print("Error uploading profile image to Storage:", error!); return }
                 
                 guard let profileImageURL = metaData?.downloadURL()?.absoluteString else { return }
-                print("Successfuly uploaded profile image: ", profileImageURL)
+                print("Successfully uploaded profile image to Storage: ", profileImageURL)
                 
                 guard let uid = user?.uid else { return }
                 
@@ -141,13 +142,9 @@ class SignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
                     
                     guard error == nil else { print("Failed to save user info into database", error!); return }
                     
-                    print("Succesfully saved user info into database")
-                    
+                    print("Succesfully saved user information into database")
                 })
-                
             })
-            
-            
         }
     }
     
