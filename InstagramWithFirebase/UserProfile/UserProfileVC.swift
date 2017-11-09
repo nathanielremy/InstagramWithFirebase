@@ -11,6 +11,9 @@ import Firebase
 
 class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
+    //Stored properties
+    var currentUser: CurrentUser?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView?.backgroundColor = .white
@@ -23,7 +26,12 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         
         // Dequeue reusable collectionViewHeaderCell
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "headerID", for: indexPath)
+        guard let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "headerID", for: indexPath) as? UserProfileHeader else {
+            print("UserProfileHeader cell is unconstructable"); fatalError()
+        }
+        
+        header.currentUser = self.currentUser
+        
         return header
     }
     
@@ -42,12 +50,15 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
        Database.database().reference().child("users").child(currentUserID).observeSingleEvent(of: .value, with: { (dataSnapshot) in
         
         // Cast the DataSnapshot as a swift type and find the value you are looking for
-            if let snapShotDictionary = dataSnapshot.value as? [String:Any], let username = snapShotDictionary["username"] as? String {
+            if let snapshotDictionary = dataSnapshot.value as? [String:Any] {
                 
-                self.navigationItem.title = username
+                self.currentUser = CurrentUser(dictionary: snapshotDictionary)
+                self.navigationItem.title = self.currentUser?.username
+                // MAKE SURE TO RELOAD COLLECTIONVIEW
+                self.collectionView?.reloadData()
                 
             } else {
-                print("Unable to retrive username from dataSnapshot dictionary")
+                print("Unable to construct dataSnapshot dictionary")
             }
         }) { (error) in
             print("Error fetching user:", error)
