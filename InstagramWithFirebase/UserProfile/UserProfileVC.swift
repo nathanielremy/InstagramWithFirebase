@@ -13,12 +13,14 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
     
     //Stored properties
     var currentUser: CurrentUser?
+    let cellID = "cellID"
     
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView?.backgroundColor = .white
         // Register the collectionView cell
         collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "headerID")
+        collectionView?.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellID)
         fetchUser()
     }
     
@@ -31,8 +33,33 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
         }
         
         header.currentUser = self.currentUser
-        
         return header
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 7
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath)
+        
+        cell.backgroundColor = .purple
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let width = (view.frame.width - 2) / 3
+        return CGSize(width: width, height: width)
     }
     
     // Define the size of the section header for the collectionView
