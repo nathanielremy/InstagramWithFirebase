@@ -7,11 +7,23 @@
 //
 
 import UIKit
+import Firebase
 
 class MainTabBarController: UITabBarController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if Auth.auth().currentUser == nil {
+            DispatchQueue.main.async {
+                // Show LogInVC if user not signed in
+                let logInVC = LogInVC()
+                let navController = UINavigationController(rootViewController: logInVC)
+                navController.isNavigationBarHidden = true
+                self.present(navController, animated: true, completion: nil)
+                return
+            }
+        }
         
         /* Specify the collectionView layout for UserProfileVC
         since it is a UICollectionViewController */

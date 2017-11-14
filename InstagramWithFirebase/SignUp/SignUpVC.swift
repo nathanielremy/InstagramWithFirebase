@@ -97,6 +97,22 @@ class SignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
         return button
     }()
     
+    let switchToLoginButton: UIButton = {
+        let button = UIButton(type: .system)
+        
+        let attributedTitle = NSMutableAttributedString(string: "Already have an account?  ", attributes: [.font : UIFont.systemFont(ofSize: 14), .foregroundColor : UIColor.lightGray])
+        attributedTitle.append(NSAttributedString(string: "Login.", attributes: [.font : UIFont.boldSystemFont(ofSize: 14), .foregroundColor : UIColor.rgb(17, 154, 237)]))
+        
+        button.setAttributedTitle(attributedTitle, for: .normal)
+        button.addTarget(self, action: #selector(handleSwitchToLogin), for: .touchUpInside)
+        
+        return button
+    }()
+
+    @objc func handleSwitchToLogin() {
+        navigationController?.popViewController(animated: true)
+    }
+    
     @objc func handleTextInputChange() {
         let isFormValid = emailTextField.text?.count ?? 0 > 0 && usernameTextField.text?.count ?? 0 > 0 && passwordTextField.text?.count ?? 0 > 0
         
@@ -156,6 +172,9 @@ class SignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
         plusPhotoButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         
         setUpInputFields()
+        
+        view.addSubview(switchToLoginButton)
+        switchToLoginButton.anchor(top: nil, left: view.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: nil, height: 50)
     }
     
     fileprivate func setUpInputFields() {

@@ -21,7 +21,26 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
         // Register the collectionView cell
         collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "headerID")
         collectionView?.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellID)
+        setUpLogOutButton()
         fetchUser()
+    }
+    
+    fileprivate func setUpLogOutButton() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "gear").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleLogOut))
+    }
+    
+    @objc func handleLogOut() {
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        alertController.addAction(UIAlertAction(title: "Log Out", style: .destructive, handler: { (_) in
+            do {
+                try Auth.auth().signOut()
+            } catch let signOutError {
+                print("Failed to sign out: ", signOutError)
+            }
+        }))
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        present(alertController, animated: true, completion: nil)
     }
     
     // Add section header for collectionView as supplementary kind
@@ -36,10 +55,12 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
         return header
     }
     
+    // How many cells in the collectionView ?
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 7
     }
     
+    // What does each cell look like ?
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath)
         
@@ -48,14 +69,17 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
         return cell
     }
     
+    // What's the horizontal spacing between each cell ?
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 1
     }
     
+    // What's the vertical spacing between each cell ?
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 1
     }
     
+    // What's the size of each cell ?
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         let width = (view.frame.width - 2) / 3
