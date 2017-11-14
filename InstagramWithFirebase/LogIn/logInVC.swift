@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class LogInVC: UIViewController {
     
@@ -55,11 +56,30 @@ class LogInVC: UIViewController {
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 5
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
-//        button.addTarget(self, action: #selector(handleSignUp), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleLogin), for: .touchUpInside)
         button.isEnabled = false
         
         return button
     }()
+    
+    @objc func handleLogin() {
+        
+        guard let email = emailTextField.text, let password = passwordTextField.text else { print("Must fill out all input fields"); return }
+        
+        Auth.auth().signIn(withEmail: email, password: password) { (user, error) in
+            if let error = error { print("Error signing in user: ", error) }
+            
+            if let user = user {
+                print("Succesfully logged back in", user.uid)
+                
+                // Delete and refresh info in mainTabBar controllers
+                guard let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController else { fatalError() }
+                mainTabBarController.setUpViewControllers()
+                
+                self.dismiss(animated: true, completion: nil)
+            }
+        }
+    }
     
     let switchToSignUpButton: UIButton = {
         let button = UIButton(type: .system)

@@ -159,6 +159,12 @@ class SignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
                     guard error == nil else { print("Failed to save user info into database", error!); return }
                     
                     print("Succesfully saved user information into database")
+                    
+                    // Delete and refresh info in mainTabBar controllers
+                    guard let mainTabBarController = UIApplication.shared.keyWindow?.rootViewController as? MainTabBarController else { fatalError() }
+                    mainTabBarController.setUpViewControllers()
+                    
+                    self.dismiss(animated: true, completion: nil)
                 })
             })
         }

@@ -23,10 +23,14 @@ class MainTabBarController: UITabBarController {
                 self.present(navController, animated: true, completion: nil)
                 return
             }
+        } else {
+            setUpViewControllers()
         }
-        
+    }
+    
+    func setUpViewControllers() {
         /* Specify the collectionView layout for UserProfileVC
-        since it is a UICollectionViewController */
+         since it is a UICollectionViewController */
         let layout = UICollectionViewFlowLayout()
         let userProfileVC = UserProfileVC(collectionViewLayout: layout)
         

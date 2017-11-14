@@ -34,6 +34,11 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
         alertController.addAction(UIAlertAction(title: "Log Out", style: .destructive, handler: { (_) in
             do {
                 try Auth.auth().signOut()
+                
+                let loginVC = LogInVC()
+                let navController = UINavigationController(rootViewController: loginVC)
+                self.present(navController, animated: true, completion: nil)
+                
             } catch let signOutError {
                 print("Failed to sign out: ", signOutError)
             }
