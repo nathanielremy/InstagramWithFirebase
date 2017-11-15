@@ -91,6 +91,7 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
         return CGSize(width: width, height: width)
     }
     
+    // Need to provide a size or the header will not render out
     // Define the size of the section header for the collectionView
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         return CGSize(width: view.frame.width, height: 200)

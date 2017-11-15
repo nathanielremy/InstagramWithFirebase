@@ -9,10 +9,30 @@
 import UIKit
 import Firebase
 
-class MainTabBarController: UITabBarController {
+class MainTabBarController: UITabBarController, UITabBarControllerDelegate {
+    
+    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
+        
+        let index = viewControllers?.index(of: viewController)
+        
+        if index == 2 {
+            
+            let layout = UICollectionViewFlowLayout()
+            let photoSelectorVC = PhotoSelectorVC(collectionViewLayout: layout)
+            let navController = UINavigationController(rootViewController: photoSelectorVC)
+            
+            present(navController, animated: true, completion: nil)
+            
+            return false
+        } else {
+            return true
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.delegate = self
         
         if Auth.auth().currentUser == nil {
             DispatchQueue.main.async {
@@ -71,37 +91,3 @@ class MainTabBarController: UITabBarController {
         return navVC
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
