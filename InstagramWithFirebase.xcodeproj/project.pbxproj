@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		440499411FBCC2A0005D266E /* PhotoSelectorHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 440499401FBCC2A0005D266E /* PhotoSelectorHeader.swift */; };
+		440499441FBCCD37005D266E /* SharePhotoVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 440499431FBCCD37005D266E /* SharePhotoVC.swift */; };
 		441734681FBC8AFE00E1B1F9 /* PhotoSelectorVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441734671FBC8AFE00E1B1F9 /* PhotoSelectorVC.swift */; };
 		4417346C1FBCACA800E1B1F9 /* PhotoSelectorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4417346B1FBCACA800E1B1F9 /* PhotoSelectorCell.swift */; };
 		441B60291FB34AED000E9A0D /* UserProfileHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 441B60281FB34AED000E9A0D /* UserProfileHeader.swift */; };
@@ -25,6 +27,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		440499401FBCC2A0005D266E /* PhotoSelectorHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectorHeader.swift; sourceTree = "<group>"; };
+		440499431FBCCD37005D266E /* SharePhotoVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharePhotoVC.swift; sourceTree = "<group>"; };
 		441734671FBC8AFE00E1B1F9 /* PhotoSelectorVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectorVC.swift; sourceTree = "<group>"; };
 		4417346B1FBCACA800E1B1F9 /* PhotoSelectorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSelectorCell.swift; sourceTree = "<group>"; };
 		441B60281FB34AED000E9A0D /* UserProfileHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileHeader.swift; sourceTree = "<group>"; };
@@ -58,10 +62,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		440499421FBCCD1C005D266E /* SharePhoto */ = {
+			isa = PBXGroup;
+			children = (
+				440499431FBCCD37005D266E /* SharePhotoVC.swift */,
+			);
+			path = SharePhoto;
+			sourceTree = "<group>";
+		};
 		441734661FBC8AE400E1B1F9 /* PhotoSelector */ = {
 			isa = PBXGroup;
 			children = (
 				441734671FBC8AFE00E1B1F9 /* PhotoSelectorVC.swift */,
+				440499401FBCC2A0005D266E /* PhotoSelectorHeader.swift */,
 				4417346B1FBCACA800E1B1F9 /* PhotoSelectorCell.swift */,
 			);
 			path = PhotoSelector;
@@ -115,6 +128,7 @@
 				44DE6EDC1FBB28B400270580 /* SignUp */,
 				441B60271FB34AD8000E9A0D /* UserProfile */,
 				441734661FBC8AE400E1B1F9 /* PhotoSelector */,
+				440499421FBCCD1C005D266E /* SharePhoto */,
 				441B602A1FB34AFA000E9A0D /* Views */,
 				44EE439D1FAF828500281467 /* SupportingFiles */,
 				442702A61FAE45F000AB6669 /* Info.plist */,
@@ -313,10 +327,12 @@
 				443FC3EF1FB215740006F6C1 /* MainTabBarController.swift in Sources */,
 				441B60291FB34AED000E9A0D /* UserProfileHeader.swift in Sources */,
 				441734681FBC8AFE00E1B1F9 /* PhotoSelectorVC.swift in Sources */,
+				440499411FBCC2A0005D266E /* PhotoSelectorHeader.swift in Sources */,
 				443FC3F31FB2194B0006F6C1 /* UserProfileVC.swift in Sources */,
 				445003B41FB4A98200180AE6 /* CurrentUser.swift in Sources */,
 				4427029B1FAE45F000AB6669 /* AppDelegate.swift in Sources */,
 				4417346C1FBCACA800E1B1F9 /* PhotoSelectorCell.swift in Sources */,
+				440499441FBCCD37005D266E /* SharePhotoVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
