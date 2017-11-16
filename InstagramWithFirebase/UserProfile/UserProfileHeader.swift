@@ -12,9 +12,9 @@ import Firebase
 class UserProfileHeader: UICollectionViewCell {
     
     //MARK: Stored properties
-    let profileImageView: UIImageView = {
-        let image = UIImageView()
-        image.backgroundColor = .white
+    let profileImageView: CustomImageView = {
+        let image = CustomImageView()
+        image.backgroundColor = .lightGray
         
         return image
     }()
@@ -97,13 +97,16 @@ class UserProfileHeader: UICollectionViewCell {
     
     var currentUser: CurrentUser? {
         didSet {
-           guard let profileImageURLString = currentUser?.profileImageURL, let profileImageURL = URL(string: profileImageURLString) else {
+           guard let profileImageURLString = currentUser?.profileImageURL else {
                 print("Current user has no profileImageURL"); return
             }
             
             print("Current user now has a profileImageURL")
             self.usernameLabel.text = currentUser?.username ?? "username"
-            setUpProfileImage(fromURL: profileImageURL)
+            profileImageView.loadImage(from: profileImageURLString)
+            
+            print("Current user now has a profileImageURL")
+            self.usernameLabel.text = currentUser?.username ?? "username"
         }
     }
     
@@ -163,28 +166,5 @@ class UserProfileHeader: UICollectionViewCell {
         topDivider.anchor(top: stackView.topAnchor, left: leftAnchor, bottom: nil, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: nil, height: 0.5)
         
         bottomDivider.anchor(top: nil, left: leftAnchor, bottom: stackView.bottomAnchor, right: rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: nil, height: 0.5)
-    }
-    
-    // Set the profileImage
-    fileprivate func setUpProfileImage(fromURL url: URL) {
-        
-        URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
-            
-            if let error = error { print("Error downloading profileImage: ", error); return }
-            
-            guard let httpStatusCode = (response as? HTTPURLResponse)?.statusCode, (httpStatusCode >= 200) && (httpStatusCode <= 299) else {
-                print("HTTP status code other than 2xx"); return
-            }
-            
-            guard let data = data else { print("No data return from profileImageURL"); return }
-            
-            guard let profileImage = UIImage(data: data) else { print("Unable to create UIImage from data"); return }
-            
-            // Get back on main thread to update UI
-            DispatchQueue.main.async {
-                self.profileImageView.image = profileImage
-            }
-            
-        }).resume()
     }
 }

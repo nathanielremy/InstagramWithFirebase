@@ -80,6 +80,8 @@ class SharePhotoVC: UIViewController {
         }
     }
     
+    
+    // Uploads post to Firebase Storage and Database
     fileprivate func savePostImageURLToDatabase(imageUrlString: String) {
         
         guard let postImage = selectedImage else { print("No selected image"); return }

@@ -14,16 +14,62 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
     //Stored properties
     var currentUser: CurrentUser?
     let cellID = "cellID"
+    var posts = [Post]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView?.backgroundColor = .white
         // Register the collectionView cell
         collectionView?.register(UserProfileHeader.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "headerID")
-        collectionView?.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellID)
+        collectionView?.register(UserProfileGridCell.self, forCellWithReuseIdentifier: cellID)
         setUpLogOutButton()
         fetchUser()
+//        fetchPosts()
+        fetchOrderedPosts()
     }
+    
+    fileprivate func fetchOrderedPosts() {
+        guard let userID = Auth.auth().currentUser?.uid else { print("Firebase could not return uid"); return }
+        
+        let databaseReference = Database.database().reference().child("posts").child(userID)
+        databaseReference.queryOrdered(byChild: "creationnDate").observe(.childAdded, with: { (dataSnapshot) in
+            
+            guard let dictionary = dataSnapshot.value as? [String : Any] else { return }
+            
+            let post = Post(dictionary: dictionary)
+            self.posts.append(post)
+            
+            self.collectionView?.reloadData()
+            
+            
+        }) { (error) in
+            print("Failed to fetch ordered posts: ", error)
+        }
+    }
+    
+//    fileprivate func fetchPosts() {
+//        guard let userID = Auth.auth().currentUser?.uid else { print("Firebase could not return uid"); return }
+//
+//        let databaseReference = Database.database().reference().child("posts").child(userID)
+//        databaseReference.observeSingleEvent(of: .value, with: { (dataSnapshot) in
+//            
+//            guard let snapshotDictionaries = dataSnapshot.value as? [String:Any] else {
+//                print("Unable to construct dataSnapshot dictionary for posts node"); return
+//            }
+//            
+//            snapshotDictionaries.forEach({ (key, value) in
+//                guard let dictionary = value as? [String : Any] else { return }
+//
+//                let post = Post(dictionary: dictionary)
+//                self.posts.append(post)
+//            })
+//
+//            self.collectionView?.reloadData()
+//            
+//        }) { (error) in
+//            print("Unable to return dataSnapshot for posts node: ", error)
+//        }
+//    }
     
     fileprivate func setUpLogOutButton() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "gear").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleLogOut))
@@ -62,14 +108,17 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
     
     // How many cells in the collectionView ?
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 7
+        return posts.count
     }
     
     // What does each cell look like ?
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath)
         
-        cell.backgroundColor = .purple
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as! UserProfileGridCell
+        
+        if !posts.isEmpty {
+            cell.post = posts[indexPath.item]
+        }
         
         return cell
     }
@@ -115,7 +164,7 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
                 self.collectionView?.reloadData()
                 
             } else {
-                print("Unable to construct dataSnapshot dictionary")
+                print("Unable to construct dataSnapshot dictionary"); return
             }
         }) { (error) in
             print("Error fetching user:", error)
