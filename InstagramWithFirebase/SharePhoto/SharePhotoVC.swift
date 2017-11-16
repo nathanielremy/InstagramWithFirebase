@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class SharePhotoVC: UIViewController {
     
@@ -59,6 +60,45 @@ class SharePhotoVC: UIViewController {
   }
     
     @objc func handleShare() {
-        print("Sharing photo")
+        
+        guard let image = selectedImage, let uploadData = UIImageJPEGRepresentation(image, 0.5) else { print("Selected image not convertible to JPEG representation"); return }
+        
+        // Disable Share Button
+        navigationItem.rightBarButtonItem?.isEnabled = false
+        
+        let randomFileName = NSUUID().uuidString
+        
+        Storage.storage().reference().child("posts").child(randomFileName).putData(uploadData, metadata: nil) { (metaData, error) in
+            
+            if let error = error { self.navigationItem.rightBarButtonItem?.isEnabled = true; print("Error uploading post image to Firebase Storage: ", error); return }
+            
+            guard let imageURLString = metaData?.downloadURL()?.absoluteString else {
+                print("No metaData returned for post image"); return
+            }
+            
+            self.savePostImageURLToDatabase(imageUrlString: imageURLString)
+        }
+    }
+    
+    fileprivate func savePostImageURLToDatabase(imageUrlString: String) {
+        
+        guard let postImage = selectedImage else { print("No selected image"); return }
+        guard let userID = Auth.auth().currentUser?.uid else { print("No currentUserID"); return }
+        
+        let userPostRef = Database.database().reference().child("posts").child(userID)
+        let autoRef = userPostRef.childByAutoId()
+        
+        let values = ["imageURL" : imageUrlString, "caption" : textView.text ?? "", "imageWidth" : postImage.size.width, "imageHeight" : postImage.size.height, "creationDate" : Date().timeIntervalSince1970] as [String : Any]
+        
+        autoRef.updateChildValues(values) { (error, databaseRefernce) in
+            
+            if let error = error {
+                self.navigationItem.rightBarButtonItem?.isEnabled = true
+                print("Failed to save post image to Firebase Database: ", error)
+            }
+            
+            print("Successfully saved post image to Firebase Database")
+            self.dismiss(animated: true, completion: nil)
+        }
     }
 }
