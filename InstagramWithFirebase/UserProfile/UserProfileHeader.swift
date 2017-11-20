@@ -101,12 +101,8 @@ class UserProfileHeader: UICollectionViewCell {
                 print("Current user has no profileImageURL"); return
             }
             
-            print("Current user now has a profileImageURL")
             self.usernameLabel.text = user?.username ?? "username"
             profileImageView.loadImage(from: profileImageURLString)
-            
-            print("Current user now has a username label")
-            self.usernameLabel.text = user?.username ?? "username"
         }
     }
     

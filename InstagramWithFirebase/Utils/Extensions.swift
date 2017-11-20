@@ -21,7 +21,7 @@ extension Database {
                 print("DataSnapshot dictionary not castable to [String:Any]"); return
             }
             
-            let user = User(uid: userID,dictionary: userDictionary)
+            let user = User(uid: userID, dictionary: userDictionary)
             completion(user)
             
         }) { (error) in
