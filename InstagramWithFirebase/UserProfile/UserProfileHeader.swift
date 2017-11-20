@@ -95,18 +95,18 @@ class UserProfileHeader: UICollectionViewCell {
         return button
     }()
     
-    var currentUser: CurrentUser? {
+    var user: User? {
         didSet {
-           guard let profileImageURLString = currentUser?.profileImageURL else {
+           guard let profileImageURLString = user?.profileImageURLString else {
                 print("Current user has no profileImageURL"); return
             }
             
             print("Current user now has a profileImageURL")
-            self.usernameLabel.text = currentUser?.username ?? "username"
+            self.usernameLabel.text = user?.username ?? "username"
             profileImageView.loadImage(from: profileImageURLString)
             
-            print("Current user now has a profileImageURL")
-            self.usernameLabel.text = currentUser?.username ?? "username"
+            print("Current user now has a username label")
+            self.usernameLabel.text = user?.username ?? "username"
         }
     }
     

@@ -28,7 +28,18 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     fileprivate func fetchPosts() {
         guard let userID = Auth.auth().currentUser?.uid else { print("Firebase could not return uid"); return }
         
-        let databaseReference = Database.database().reference().child("posts").child(userID)
+        Database.fetchUserFromUserID(userID: userID) { (user) in
+            if let user = user {
+                self.fetchPostsWithUser(user: user)
+            } else {
+                fatalError()
+            }
+        }
+    }
+    
+    fileprivate func fetchPostsWithUser(user: User) {
+        
+        let databaseReference = Database.database().reference().child("posts").child(user.uid)
         databaseReference.observeSingleEvent(of: .value, with: { (dataSnapshot) in
             
             guard let snapshotDictionaries = dataSnapshot.value as? [String:Any] else {
@@ -36,9 +47,9 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
             }
             
             snapshotDictionaries.forEach({ (key, value) in
-                guard let dictionary = value as? [String : Any] else { return }
+                guard let postDictionary = value as? [String : Any] else { return }
                 
-                let post = Post(dictionary: dictionary)
+                let post = Post(user: user, dictionary: postDictionary)
                 self.posts.append(post)
             })
             
@@ -54,9 +65,15 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        var height: CGFloat = 40 + 8 + 8 // userProfileImageView
+        height += view.frame.width // sharedImageView
+        height += 50 // Like, comment, share buttons
+        height += 60 // caption and creationDate
+        
         let width = view.frame.width
         
-        return CGSize(width: width, height: 200)
+        return CGSize(width: width, height: height)
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -70,8 +87,6 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
         if !posts.isEmpty {
             cell.post = posts[indexPath.item]
         }
-        
         return cell
     }
-    
 }

@@ -8,6 +8,28 @@
 
 import Foundation
 import UIKit
+import Firebase
+
+//MARK: Firebase Database
+extension Database {
+    static func fetchUserFromUserID(userID: String, completion: @escaping (User?) -> Void) {
+        
+        Database.database().reference().child("users").child(userID).observeSingleEvent(of: .value, with: { (dataSnapshot) in
+            
+            guard let userDictionary = dataSnapshot.value as? [String : Any] else {
+                completion(nil)
+                print("DataSnapshot dictionary not castable to [String:Any]"); return
+            }
+            
+            let user = User(uid: userID,dictionary: userDictionary)
+            completion(user)
+            
+        }) { (error) in
+            print("Failed to fetch dataSnapshot of currentUser", error)
+            completion(nil)
+        }
+    }
+}
 
 //MARK: UIColor
 extension UIColor {
@@ -48,7 +70,3 @@ extension UIView {
         }
     }
 }
-
-
-
-
