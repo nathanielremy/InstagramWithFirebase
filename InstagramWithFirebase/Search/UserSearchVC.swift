@@ -43,6 +43,7 @@ class UserSearchVC: UICollectionViewController, UICollectionViewDelegateFlowLayo
         super.viewDidLoad()
         collectionView?.backgroundColor = .white
         collectionView?.alwaysBounceVertical = true
+        collectionView?.keyboardDismissMode = .onDrag
         
         collectionView?.register(UserSearchCell.self, forCellWithReuseIdentifier: cellID)
         
@@ -50,6 +51,12 @@ class UserSearchVC: UICollectionViewController, UICollectionViewDelegateFlowLayo
         searchBar.anchor(top: navigationController?.navigationBar.topAnchor, left: navigationController?.navigationBar.leftAnchor, bottom: navigationController?.navigationBar.bottomAnchor, right: navigationController?.navigationBar.rightAnchor, paddingTop: 0, paddingLeft: 8, paddingBottom: -8, paddingRight: -8, width: nil, height: nil)
         
         fetchUsers()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.searchBar.isHidden = false
     }
     
     fileprivate func fetchUsers() {
@@ -62,7 +69,13 @@ class UserSearchVC: UICollectionViewController, UICollectionViewDelegateFlowLayo
             
             // Retrieve all users from database and store them in array
             dictionaries.forEach({ (key, value) in
+                
+                if key == Auth.auth().currentUser?.uid {
+                    print("Found myself!! "); return
+                }
+                
                 guard let userDictionary = value as? [String : Any] else { return }
+                
                 let user = User(uid: key, dictionary: userDictionary)
                 self.users.append(user)
             })
@@ -79,6 +92,20 @@ class UserSearchVC: UICollectionViewController, UICollectionViewDelegateFlowLayo
         let width = view.frame.width
         
         return CGSize(width: width, height: 66)
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        self.searchBar.isHidden = true
+        self.searchBar.resignFirstResponder()
+        
+        let user = filteredUsers[indexPath.item]
+        print(user.username)
+        
+        let userProfileVC = UserProfileVC(collectionViewLayout: UICollectionViewFlowLayout())
+        userProfileVC.userID = user.uid
+        navigationController?.pushViewController(userProfileVC, animated: true)
+        
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
