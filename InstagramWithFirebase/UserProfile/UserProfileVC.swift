@@ -21,8 +21,6 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        print("UserProfileVC ViewDidLoad() Function call")
-        
         collectionView?.backgroundColor = .white
         
         // Register the collectionView cell

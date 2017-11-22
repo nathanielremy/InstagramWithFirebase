@@ -22,11 +22,16 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
         collectionView?.register(HomePostCell.self, forCellWithReuseIdentifier: cellID)
         
         setUpNavigationItems()
-        fetchPosts()
+        fetchAllPost()
     }
     
-    fileprivate func fetchPosts() {
-        guard let userID = Auth.auth().currentUser?.uid else { print("Firebase could not return uid"); return }
+    fileprivate func fetchAllPost() {
+        fetchFollowingPosts()
+        fetchOwnPosts()
+    }
+    
+    fileprivate func fetchOwnPosts() {
+        guard let userID = Auth.auth().currentUser?.uid else { print("Firebase could not return current user id"); return }
         
         Database.fetchUserFromUserID(userID: userID) { (user) in
             if let user = user {
@@ -34,6 +39,27 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
             } else {
                 fatalError()
             }
+        }
+    }
+    
+    fileprivate func fetchFollowingPosts() {
+        
+        guard let currentUserID = Auth.auth().currentUser?.uid else { print("Firebase could not fetch current user id"); return }
+        
+        let followingRef = Database.database().reference().child("following").child(currentUserID)
+        followingRef.observeSingleEvent(of: .value, with: { (dataSnapshot) in
+            
+            guard let dictionary = dataSnapshot.value as? [String:Any] else { return }
+            
+            dictionary.forEach({ (key, value) in
+                Database.fetchUserFromUserID(userID: key, completion: { (user) in
+                    if let user = user {
+                        self.fetchPostsWithUser(user: user)
+                    }
+                })
+            })
+        }) { (error) in
+            print("Failed to fetch following: ", error )
         }
     }
     
@@ -51,6 +77,11 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
                 
                 let post = Post(user: user, dictionary: postDictionary)
                 self.posts.append(post)
+            })
+            
+            // Rearrange the posts array to be from most recent to oldest
+            self.posts.sort(by: { (post1, post2) -> Bool in
+                return post1.creationDate.compare(post2.creationDate) == .orderedDescending
             })
             
             self.collectionView?.reloadData()
