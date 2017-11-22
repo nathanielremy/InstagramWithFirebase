@@ -16,6 +16,8 @@ class CustomImageView: UIImageView {
         
         self.lastURLStringUsedToLoadImage = urlString
         
+        self.image = nil
+        
         // Check if image has been cached
         if let cachedImage = imageCache[urlString] {
             self.image = cachedImage

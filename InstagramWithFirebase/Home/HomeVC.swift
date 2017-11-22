@@ -21,13 +21,23 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
         collectionView?.backgroundColor = .white
         collectionView?.register(HomePostCell.self, forCellWithReuseIdentifier: cellID)
         
+        // Manualy refresh the collectionView
+        let refreshController = UIRefreshControl()
+        refreshController.addTarget(self, action: #selector(handleRefresh), for: .valueChanged)
+        collectionView?.refreshControl = refreshController
+        
         setUpNavigationItems()
-        fetchAllPost()
+        fetchAllPosts()
     }
     
-    fileprivate func fetchAllPost() {
+    fileprivate func fetchAllPosts() {
         fetchFollowingPosts()
         fetchOwnPosts()
+    }
+    
+    @objc func handleRefresh() {
+        self.posts.removeAll()
+        fetchAllPosts()
     }
     
     fileprivate func fetchOwnPosts() {
@@ -84,6 +94,7 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
                 return post1.creationDate.compare(post2.creationDate) == .orderedDescending
             })
             
+            self.collectionView?.refreshControl?.endRefreshing()
             self.collectionView?.reloadData()
             
         }) { (error) in
@@ -92,7 +103,13 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     }
     
     func setUpNavigationItems() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "camera3").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleCamera))
         navigationItem.titleView = UIImageView(image: #imageLiteral(resourceName: "logo2"))
+    }
+    
+    @objc func handleCamera() {
+        let cameraVC = CameraVC()
+        present(cameraVC, animated: true, completion: nil)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
