@@ -132,9 +132,23 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
         
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as! HomePostCell
         
+        cell.delegate = self
+        
         if !posts.isEmpty {
             cell.post = posts[indexPath.item]
         }
         return cell
+    }
+}
+
+//MARK: HomePostCellDelegate Methods
+extension HomeVC: HomePostCellDelegate {
+    
+    func didTapComment(fromPost post: Post) {
+        
+        print("Post Caption: ", post.caption)
+        
+        let commentsVC = CommentsVC(collectionViewLayout: UICollectionViewFlowLayout())
+        navigationController?.pushViewController(commentsVC, animated: true)
     }
 }

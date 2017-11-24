@@ -8,9 +8,15 @@
 
 import UIKit
 
+protocol HomePostCellDelegate {
+    func didTapComment(fromPost post: Post)
+}
+
 class HomePostCell: UICollectionViewCell {
     
     // Stored properties
+    var delegate: HomePostCellDelegate?
+    
     var post: Post? {
         didSet {
             guard let post = post else { return }
@@ -75,12 +81,20 @@ class HomePostCell: UICollectionViewCell {
         return button
     }()
     
-    let commentButton: UIButton = {
+    // Must be lazy var to add target
+    lazy var commentButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage( #imageLiteral(resourceName: "comment").withRenderingMode(.alwaysOriginal), for: .normal)
+        button.addTarget(self, action: #selector(handleComment), for: .touchUpInside)
         
         return button
     }()
+    
+    @objc func handleComment() {
+        
+        guard let post = self.post else { return }
+        delegate?.didTapComment(fromPost: post)
+    }
     
     let sendMessageButton: UIButton = {
         let button = UIButton(type: .system)
