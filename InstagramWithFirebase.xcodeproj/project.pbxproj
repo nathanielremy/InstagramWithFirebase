@@ -22,6 +22,8 @@
 		442702A51FAE45F000AB6669 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 442702A31FAE45F000AB6669 /* LaunchScreen.storyboard */; };
 		443FC3EF1FB215740006F6C1 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 443FC3EE1FB215740006F6C1 /* MainTabBarController.swift */; };
 		443FC3F31FB2194B0006F6C1 /* UserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 443FC3F21FB2194B0006F6C1 /* UserProfileVC.swift */; };
+		444FDFD81FC8704000A89236 /* CustomAnimationPresentor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444FDFD71FC8704000A89236 /* CustomAnimationPresentor.swift */; };
+		444FDFDA1FC87AE900A89236 /* CustomAnimationDismisser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444FDFD91FC87AE900A89236 /* CustomAnimationDismisser.swift */; };
 		445003B41FB4A98200180AE6 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 445003B31FB4A98200180AE6 /* User.swift */; };
 		448DB7921FAF484000233DA1 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 448DB7911FAF484000233DA1 /* Extensions.swift */; };
 		448DB7941FAF538600233DA1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 448DB7931FAF538600233DA1 /* GoogleService-Info.plist */; };
@@ -54,6 +56,8 @@
 		442702A61FAE45F000AB6669 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		443FC3EE1FB215740006F6C1 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 		443FC3F21FB2194B0006F6C1 /* UserProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileVC.swift; sourceTree = "<group>"; };
+		444FDFD71FC8704000A89236 /* CustomAnimationPresentor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAnimationPresentor.swift; sourceTree = "<group>"; };
+		444FDFD91FC87AE900A89236 /* CustomAnimationDismisser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAnimationDismisser.swift; sourceTree = "<group>"; };
 		445003B31FB4A98200180AE6 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		448DB7911FAF484000233DA1 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		448DB7931FAF538600233DA1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -93,6 +97,8 @@
 		4406D8441FC5C66300C18007 /* Camera */ = {
 			isa = PBXGroup;
 			children = (
+				444FDFD71FC8704000A89236 /* CustomAnimationPresentor.swift */,
+				444FDFD91FC87AE900A89236 /* CustomAnimationDismisser.swift */,
 				4406D8451FC5C69000C18007 /* CameraVC.swift */,
 				44E125421FC732F500FAACD9 /* PreviewPhotoContainerView.swift */,
 			);
@@ -392,11 +398,13 @@
 				4498FF2B1FBE0409005A66E8 /* CustomImageView.swift in Sources */,
 				443FC3EF1FB215740006F6C1 /* MainTabBarController.swift in Sources */,
 				441B60291FB34AED000E9A0D /* UserProfileHeader.swift in Sources */,
+				444FDFD81FC8704000A89236 /* CustomAnimationPresentor.swift in Sources */,
 				4498FF271FBDF3DB005A66E8 /* Post.swift in Sources */,
 				441734681FBC8AFE00E1B1F9 /* PhotoSelectorVC.swift in Sources */,
 				44F190EC1FBE19DA00160044 /* HomeVC.swift in Sources */,
 				440499411FBCC2A0005D266E /* PhotoSelectorHeader.swift in Sources */,
 				44F190F01FBE234800160044 /* ImageCache.swift in Sources */,
+				444FDFDA1FC87AE900A89236 /* CustomAnimationDismisser.swift in Sources */,
 				443FC3F31FB2194B0006F6C1 /* UserProfileVC.swift in Sources */,
 				445003B41FB4A98200180AE6 /* User.swift in Sources */,
 				44E125431FC732F500FAACD9 /* PreviewPhotoContainerView.swift in Sources */,

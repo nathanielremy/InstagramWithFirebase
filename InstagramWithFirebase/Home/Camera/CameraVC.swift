@@ -9,7 +9,7 @@
 import UIKit
 import AVFoundation
 
-class CameraVC: UIViewController, AVCapturePhotoCaptureDelegate {
+class CameraVC: UIViewController, AVCapturePhotoCaptureDelegate, UIViewControllerTransitioningDelegate {
     
     // Stored properties
     let dismissButton: UIButton = {
@@ -35,9 +35,25 @@ class CameraVC: UIViewController, AVCapturePhotoCaptureDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        transitioningDelegate = self
         setupCaptureSession()
         setupHUD()
    }
+    
+    //MARK: Transitioning delegate methods
+    
+    let customAnimationPresentor = CustomAnimationPresentor()
+    let customAnimationDismisser = CustomAnimationDismisser()
+    
+    // How will the viewController be presented ?
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return customAnimationPresentor
+    }
+    
+    // How will the viewController be dismissed ?
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return customAnimationDismisser
+    }
     
     fileprivate func setupHUD() {
         

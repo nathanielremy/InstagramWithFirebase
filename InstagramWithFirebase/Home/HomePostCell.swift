@@ -53,7 +53,7 @@ class HomePostCell: UICollectionViewCell {
     
     let optionsButton: UIButton = {
         let button = UIButton(type: .system)
-        //Hitting (option + 8) will give you the unicode bullets
+        // (option + 8) will give you the unicode bullets
         button.setTitle("•••", for: .normal)
         button.setTitleColor(.black, for: .normal)
         
