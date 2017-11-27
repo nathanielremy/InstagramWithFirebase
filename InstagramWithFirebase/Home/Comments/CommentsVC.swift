@@ -7,11 +7,23 @@
 //
 
 import UIKit
+import Firebase
 
 class CommentsVC: UICollectionViewController {
     
     // Stored properties
-    var containerView: UIView = {
+    var post: Post?
+    
+    let commentTextField: UITextField = {
+        let tf = UITextField()
+        tf.placeholder = "Enter Comment"
+        
+        return tf
+    }()
+    
+    
+    // Must be lazy var
+    lazy var containerView: UIView = {
         let containerView = UIView()
         containerView.backgroundColor = .white
         containerView.frame = CGRect(x: 0, y: 0, width: 100, height: 50)
@@ -25,18 +37,32 @@ class CommentsVC: UICollectionViewController {
         containerView.addSubview(sendButton)
         sendButton.anchor(top: containerView.topAnchor, left: nil, bottom: containerView.bottomAnchor, right: containerView.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: -12, width: 50, height: nil)
         
-        
-        let commentTextField = UITextField()
-        commentTextField.placeholder = "Enter Comment"
-        
-        containerView.addSubview(commentTextField)
-        commentTextField.anchor(top: containerView.topAnchor, left: containerView.leftAnchor, bottom: containerView.bottomAnchor, right: sendButton.leftAnchor, paddingTop: 0, paddingLeft: 12, paddingBottom: 0, paddingRight: 0, width: nil, height: nil)
+        containerView.addSubview(self.commentTextField)
+        self.commentTextField.anchor(top: containerView.topAnchor, left: containerView.leftAnchor, bottom: containerView.bottomAnchor, right: sendButton.leftAnchor, paddingTop: 0, paddingLeft: 12, paddingBottom: 0, paddingRight: 0, width: nil, height: nil)
         
         return containerView
     }()
     
     @objc func handleSend() {
-        print("Handle Send")
+        guard let uid = Auth.auth().currentUser?.uid else {
+            print("Could not get currentUserId"); return
+        }
+        guard let postID = self.post?.id else {
+            print("Post does not contain an ID"); return
+        }
+        guard let comment = commentTextField.text, comment != "" else {
+            print("CommentTextField is empty"); return
+        }
+        
+        let values = ["text" : comment, "creationDate" : Date().timeIntervalSince1970, "uid" : uid] as [String : Any]
+        Database.database().reference().child("comments").child(postID).childByAutoId().updateChildValues(values) { (err, databaseReference) in
+            
+            if let error = err {
+                print("Error uploading comment: ", error)
+            }
+            print("Succesfully uploaded comment: ", comment)
+            self.commentTextField.text = ""
+        }
     }
     
     // Don't have to handle the position of the view

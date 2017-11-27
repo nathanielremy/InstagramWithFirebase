@@ -197,6 +197,7 @@
 			isa = PBXGroup;
 			children = (
 				448DB7911FAF484000233DA1 /* Extensions.swift */,
+				44F190EF1FBE234800160044 /* ImageCache.swift */,
 				4498FF2A1FBE0409005A66E8 /* CustomImageView.swift */,
 			);
 			path = Utils;
@@ -207,7 +208,6 @@
 			children = (
 				4498FF261FBDF3DB005A66E8 /* Post.swift */,
 				445003B31FB4A98200180AE6 /* User.swift */,
-				44F190EF1FBE234800160044 /* ImageCache.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";

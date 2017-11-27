@@ -85,7 +85,8 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
             snapshotDictionaries.forEach({ (key, value) in
                 guard let postDictionary = value as? [String : Any] else { return }
                 
-                let post = Post(user: user, dictionary: postDictionary)
+                var post = Post(user: user, dictionary: postDictionary)
+                post.id = key
                 self.posts.append(post)
             })
             
@@ -96,6 +97,7 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
             
             self.collectionView?.refreshControl?.endRefreshing()
             self.collectionView?.reloadData()
+            
             
         }) { (error) in
             print("Unable to return dataSnapshot for posts node: ", error)
@@ -149,6 +151,7 @@ extension HomeVC: HomePostCellDelegate {
         print("Post Caption: ", post.caption)
         
         let commentsVC = CommentsVC(collectionViewLayout: UICollectionViewFlowLayout())
+        commentsVC.post = post
         navigationController?.pushViewController(commentsVC, animated: true)
     }
 }
