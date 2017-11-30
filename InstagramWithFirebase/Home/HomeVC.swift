@@ -11,7 +11,7 @@ import Firebase
 
 class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
-    // stored properties
+    //MARK: stored properties
     let cellID = "cellID"
     var posts = [Post]()
     

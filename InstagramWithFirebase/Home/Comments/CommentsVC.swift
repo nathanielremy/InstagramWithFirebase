@@ -9,10 +9,12 @@
 import UIKit
 import Firebase
 
-class CommentsVC: UICollectionViewController {
+class CommentsVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
     
     // Stored properties
+    var comments = [Comment]()
     var post: Post?
+    let cellID = "cellID"
     
     let commentTextField: UITextField = {
         let tf = UITextField()
@@ -39,6 +41,12 @@ class CommentsVC: UICollectionViewController {
         
         containerView.addSubview(self.commentTextField)
         self.commentTextField.anchor(top: containerView.topAnchor, left: containerView.leftAnchor, bottom: containerView.bottomAnchor, right: sendButton.leftAnchor, paddingTop: 0, paddingLeft: 12, paddingBottom: 0, paddingRight: 0, width: nil, height: nil)
+        
+        let lineSepratorView = UIView()
+        lineSepratorView.backgroundColor = UIColor.rgb(230, 230, 230)
+        
+        containerView.addSubview(lineSepratorView)
+        lineSepratorView.anchor(top: containerView.topAnchor, left: containerView.leftAnchor, bottom: nil, right: containerView.rightAnchor, paddingTop: 0, paddingLeft: 0, paddingBottom: 0, paddingRight: 0, width: nil, height: 0.5)
         
         return containerView
     }()
@@ -77,12 +85,45 @@ class CommentsVC: UICollectionViewController {
         return true
     }
     
+    fileprivate func fetchComments() {
+        guard let postID = self.post?.id else {
+            print("cannot fetch comments without post.id"); return
+        }
+        
+        let dataBasereference = Database.database().reference().child("comments").child(postID)
+        dataBasereference.observe(.childAdded, with: { (dataSnapshot) in
+            
+            guard let dictionary = dataSnapshot.value as? [String : Any] else {
+                print("DataSnapshot for commentsVC not castable as [String : Any]"); return
+            }
+            
+            guard let uid = dictionary["uid"] as? String else { print("No uid returned from comments dictionary"); return }
+            
+            Database.fetchUserFromUserID(userID: uid, completion: { (user) in
+                
+                if let user = user {
+                    
+                    let comment = Comment(user: user, dictionary: dictionary)
+                    self.comments.append(comment)
+                    self.collectionView?.reloadData()
+                    
+                }
+           })
+        }) { (error) in
+            print("Error fetching comments for \(postID)")
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         navigationItem.title = "Comments"
+        collectionView?.register(CommentsCell.self, forCellWithReuseIdentifier: cellID)
+        fetchComments()
         
-        collectionView?.backgroundColor = .red
+        collectionView?.backgroundColor = .white
+        collectionView?.alwaysBounceVertical = true
+        collectionView?.keyboardDismissMode = .interactive
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -98,4 +139,43 @@ class CommentsVC: UICollectionViewController {
         // Reshow the tabBar when the viewController gets dismissed
         tabBarController?.tabBar.isHidden = false
     }
+    
+    //MARK: CollectionView delegate methods
+    
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return self.comments.count
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as! CommentsCell
+        
+        cell.comment = self.comments[indexPath.item]
+        
+        return cell
+    }
+    
+    //MARK: UICollectionViewDelegateFlowLayout methods
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        // AutoSize the cells
+        
+        // MUST BE IN THIS ORDER !!!
+        
+        let frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 50)
+        let dummyCell = CommentsCell(frame: frame)
+        dummyCell.comment = comments[indexPath.item]
+        dummyCell.layoutIfNeeded()
+        
+        let targetSize = CGSize(width: view.frame.width, height: 1000)
+        let estimatedSize = dummyCell.systemLayoutSizeFitting(targetSize)
+        let height = max(40 + 8 + 8, estimatedSize.height)
+        
+        return CGSize(width: view.frame.width, height: height)
+    }    
 }

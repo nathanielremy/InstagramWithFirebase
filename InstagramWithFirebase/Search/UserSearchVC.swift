@@ -100,7 +100,6 @@ class UserSearchVC: UICollectionViewController, UICollectionViewDelegateFlowLayo
         self.searchBar.resignFirstResponder()
         
         let user = filteredUsers[indexPath.item]
-        print(user.username)
         
         let userProfileVC = UserProfileVC(collectionViewLayout: UICollectionViewFlowLayout())
         userProfileVC.userID = user.uid
