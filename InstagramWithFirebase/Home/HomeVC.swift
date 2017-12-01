@@ -87,18 +87,30 @@ class HomeVC: UICollectionViewController, UICollectionViewDelegateFlowLayout {
                 
                 var post = Post(user: user, dictionary: postDictionary)
                 post.id = key
-                self.posts.append(post)
+                
+                guard let currentUserID = Auth.auth().currentUser?.uid else { print("Could not retrieve the currentuserID"); return }
+                
+                Database.database().reference().child("likes").child(key).child(currentUserID).observeSingleEvent(of: .value, with: { (dataSnapshot) in
+                    
+                    if let value = dataSnapshot.value as? Int, value == 1 {
+                        post.hasLiked = true
+                    } else {
+                        post.hasLiked = false
+                    }
+                    
+                    self.posts.append(post)
+                    // Rearrange the posts array to be from most recent to oldest
+                    self.posts.sort(by: { (post1, post2) -> Bool in
+                        return post1.creationDate.compare(post2.creationDate) == .orderedDescending
+                    })
+                    
+                    self.collectionView?.reloadData()
+                    self.collectionView?.refreshControl?.endRefreshing()
+                    
+                }, withCancel: { (error) in
+                    print("Error retrieving dataSnapshot for likes/\(key)\(currentUserID): ", error)
+                })
             })
-            
-            // Rearrange the posts array to be from most recent to oldest
-            self.posts.sort(by: { (post1, post2) -> Bool in
-                return post1.creationDate.compare(post2.creationDate) == .orderedDescending
-            })
-            
-            self.collectionView?.refreshControl?.endRefreshing()
-            self.collectionView?.reloadData()
-            
-            
         }) { (error) in
             print("Unable to return dataSnapshot for posts node: ", error)
         }
@@ -153,5 +165,32 @@ extension HomeVC: HomePostCellDelegate {
         let commentsVC = CommentsVC(collectionViewLayout: UICollectionViewFlowLayout())
         commentsVC.post = post
         navigationController?.pushViewController(commentsVC, animated: true)
+    }
+    
+    func didLikePost(for cell: HomePostCell) {
+        
+        guard let indexPath = collectionView?.indexPath(for: cell) else {
+            print("Could not return the indexPath for the liked cell"); return
+        }
+        
+        var post = self.posts[indexPath.item]
+        
+        guard let postID = post.id else { print("Post item contains no postID"); return }
+        guard let currentUserID = Auth.auth().currentUser?.uid else { print("could not retrieve the current user's UID"); return }
+        
+        let values = [currentUserID : post.hasLiked ? 0 : 1]
+        
+        let databasereferance = Database.database().reference().child("likes").child(postID)
+        databasereferance.updateChildValues(values) { (err, _) in
+            
+            if let error = err {
+                print("Failed to update likes/\(postID)\(currentUserID)", error); return
+            }
+            print("Successfully liked post: ", post.caption)
+            
+            post.hasLiked = !post.hasLiked
+            self.posts[indexPath.item] = post
+            self.collectionView?.reloadItems(at: [indexPath])
+        }
     }
 }
