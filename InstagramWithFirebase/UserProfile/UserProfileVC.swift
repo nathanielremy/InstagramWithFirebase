@@ -80,6 +80,13 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
     // What does each cell look like ?
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
+        //MARK: FIRE OFF THE PAGINATE CALL
+        if self.isFinishedPaging == false {
+            if indexPath.item == self.posts.count - 1 {
+                paginatePosts()
+            }
+        }
+        
         if isGridView {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellID, for: indexPath) as! UserProfileGridCell
             
@@ -148,32 +155,86 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
                 
                 self.collectionView?.reloadData()
                 
-                self.fetchOrderedPosts(forUserID: user.uid)
+                self.paginatePosts()
             }
         }
     }
     
-    fileprivate func fetchOrderedPosts(forUserID userID: String) {
+    //MARK: PAGINATION
+    var isFinishedPaging = false
+    
+    fileprivate func paginatePosts() {
         
-        let databaseReference = Database.database().reference().child("posts").child(userID)
-        databaseReference.queryOrdered(byChild: "creationnDate").observe(.childAdded, with: { (dataSnapshot) in
-            
-            guard let dictionary = dataSnapshot.value as? [String : Any] else { return }
-            guard let user = self.user else { return }
-            
-            var post = Post(user: user, dictionary: dictionary)
-            post.id = dataSnapshot.key
-            
-            self.posts.insert(post, at: 0)
-            //self.posts.append(post)
-            
-            self.collectionView?.reloadData()
-            
-            
-        }) { (error) in
-            print("Failed to fetch ordered posts: ", error)
+        guard let currentUserId = self.user?.uid else { print("No currentUserID"); return }
+        
+        let databaseRef = Database.database().reference().child("posts").child(currentUserId)
+        
+        var query = databaseRef.queryOrdered(byChild: "creationDate")
+        
+        if self.posts.count > 0 {
+            let value = self.posts.last?.creationDate.timeIntervalSince1970
+            query = query.queryEnding(atValue: value)
         }
-    }
+        
+        query.queryLimited(toLast: 4).observeSingleEvent(of: .value
+            , with: { (dataSnapshot) in
+                
+                guard var allObjects = dataSnapshot.children.allObjects as? [DataSnapshot] else {
+                    fatalError("failed to convert allObjects into [DataSnapshot]")
+                }
+                
+                allObjects.reverse()
+                
+                if allObjects.count < 4 {
+                    self.isFinishedPaging = true
+                }
+                
+                if self.posts.count > 0 && allObjects.count > 0 {
+                    allObjects.removeFirst()
+                }
+                
+                guard let user = self.user else {
+                    print("self.user is nil"); return
+                }
+                
+                allObjects.forEach({ (snapshot) in
+                    
+                    guard let dictionary = snapshot.value as? [String : Any] else {
+                        print("failed to convert dataSnapshot.value into [String : Any]"); return
+                    }
+                    var post = Post(user: user, dictionary: dictionary)
+                    post.id = snapshot.key
+                    self.posts.append(post)
+                })
+                
+                self.collectionView?.reloadData()
+                
+        }) { (error) in
+            print("Failed to paginate for currentUser's post: ", error)
+        }
+     }
+    
+//    fileprivate func fetchOrderedPosts(forUserID userID: String) {
+//
+//        let databaseReference = Database.database().reference().child("posts").child(userID)
+//        databaseReference.queryOrdered(byChild: "creationnDate").observe(.childAdded, with: { (dataSnapshot) in
+//
+//            guard let dictionary = dataSnapshot.value as? [String : Any] else { return }
+//            guard let user = self.user else { return }
+//
+//            var post = Post(user: user, dictionary: dictionary)
+//            post.id = dataSnapshot.key
+//
+//            self.posts.insert(post, at: 0)
+//            //self.posts.append(post)
+//
+//            self.collectionView?.reloadData()
+//
+//
+//        }) { (error) in
+//            print("Failed to fetch ordered posts: ", error)
+//        }
+//    }
 }
 
 
