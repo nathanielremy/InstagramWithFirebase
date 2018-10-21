@@ -149,9 +149,9 @@ class SignUpVC: UIViewController, UIImagePickerControllerDelegate, UINavigationC
                 guard let profileImageURL = metaData?.downloadURL()?.absoluteString else { return }
                 print("Successfully uploaded profile image to Storage: ", profileImageURL)
                 
-                guard let uid = user?.uid else { return }
+                guard let uid = user?.uid, let fcmToken = Messaging.messaging().fcmToken else { return }
                 
-                let userValues = ["username" : username, "profileImageURL" : profileImageURL]
+                let userValues = ["username" : username, "profileImageURL" : profileImageURL, "fcmToken" : fcmToken]
                 let values = [uid : userValues]
                 // Add user to Firebase database
                 Database.database().reference().child("users").updateChildValues(values, withCompletionBlock: { (error, databaseReference) in

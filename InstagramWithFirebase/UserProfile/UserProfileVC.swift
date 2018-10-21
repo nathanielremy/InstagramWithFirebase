@@ -35,6 +35,11 @@ class UserProfileVC: UICollectionViewController, UICollectionViewDelegateFlowLay
         fetchUser()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchUser()
+    }
+    
     fileprivate func setUpLogOutButton() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "gear").withRenderingMode(.alwaysOriginal), style: .plain, target: self, action: #selector(handleLogOut))
     }

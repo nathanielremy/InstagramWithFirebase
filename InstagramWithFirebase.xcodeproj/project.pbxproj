@@ -71,6 +71,7 @@
 		4498FF281FBDF682005A66E8 /* UserProfileGridCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileGridCell.swift; sourceTree = "<group>"; };
 		4498FF2A1FBE0409005A66E8 /* CustomImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImageView.swift; sourceTree = "<group>"; };
 		44DE6EDA1FBB28AA00270580 /* logInVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = logInVC.swift; sourceTree = "<group>"; };
+		44E01F4F217BBD240064D95C /* InstagramWithFirebase.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = InstagramWithFirebase.entitlements; sourceTree = "<group>"; };
 		44E125421FC732F500FAACD9 /* PreviewPhotoContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewPhotoContainerView.swift; sourceTree = "<group>"; };
 		44F190EB1FBE19DA00160044 /* HomeVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeVC.swift; sourceTree = "<group>"; };
 		44F190ED1FBE1C7800160044 /* HomePostCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePostCell.swift; sourceTree = "<group>"; };
@@ -171,6 +172,7 @@
 		442702991FAE45F000AB6669 /* InstagramWithFirebase */ = {
 			isa = PBXGroup;
 			children = (
+				44E01F4F217BBD240064D95C /* InstagramWithFirebase.entitlements */,
 				4427029A1FAE45F000AB6669 /* AppDelegate.swift */,
 				443FC3EE1FB215740006F6C1 /* MainTabBarController.swift */,
 				4498FF251FBDF3BC005A66E8 /* Models */,
@@ -282,7 +284,6 @@
 				442702941FAE45F000AB6669 /* Frameworks */,
 				442702951FAE45F000AB6669 /* Resources */,
 				7B98B748B50D678F231F2374 /* [CP] Embed Pods Frameworks */,
-				7F02C282C3F004F70D0E1131 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -306,6 +307,11 @@
 					442702961FAE45F000AB6669 = {
 						CreatedOnToolsVersion = 9.1;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.Push = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -369,6 +375,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-InstagramWithFirebase/Pods-InstagramWithFirebase-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
@@ -376,27 +383,13 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-InstagramWithFirebase/Pods-InstagramWithFirebase-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		7F02C282C3F004F70D0E1131 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-InstagramWithFirebase/Pods-InstagramWithFirebase-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -570,6 +563,7 @@
 			baseConfigurationReference = 8227C52F70B5648F2EBD9D61 /* Pods-InstagramWithFirebase.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = InstagramWithFirebase/InstagramWithFirebase.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6ZT386G464;
 				INFOPLIST_FILE = InstagramWithFirebase/Info.plist;
@@ -587,6 +581,7 @@
 			baseConfigurationReference = ECBDEC6367B98A9625D78386 /* Pods-InstagramWithFirebase.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = InstagramWithFirebase/InstagramWithFirebase.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6ZT386G464;
 				INFOPLIST_FILE = InstagramWithFirebase/Info.plist;

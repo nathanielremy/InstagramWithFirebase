@@ -8,9 +8,10 @@
 
 import UIKit
 import Firebase
+import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, MessagingDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
 
@@ -26,7 +27,67 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         guard let window = window else { fatalError() }
         window.rootViewController = MainTabBarController()
         
+        attemptRegisteringForAPNS(application: application)
+        
         return true
+    }
+    
+    fileprivate func attemptRegisteringForAPNS(application: UIApplication) {
+        
+        Messaging.messaging().delegate = self
+        UNUserNotificationCenter.current().delegate = self
+        
+        //User Notifications Auth
+        //For iOS 10 and above
+        let options: UNAuthorizationOptions = [.alert, .badge, .sound]
+        UNUserNotificationCenter.current().requestAuthorization(options: options) { (granted, err) in
+            if let error = err {
+                print("Failed to request Auth: ", error); return
+            }
+            
+            if granted {
+                print("Auth granted")
+            } else {
+                print("Auth denied")
+            }
+        }
+        
+        application.registerForRemoteNotifications()
+    }
+    
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
+        print("Registration Token Received: ", fcmToken)
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler(.alert)
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        let userInfo = response.notification.request.content.userInfo
+        
+        guard let uId = userInfo["followerId"] as? String else { print("FAILED"); return }
+        
+        let userProfileVC = UserProfileVC(collectionViewLayout: UICollectionViewFlowLayout())
+        userProfileVC.userID = uId
+        
+        if let mainTabBarController = self.window?.rootViewController as? MainTabBarController {
+            mainTabBarController.selectedIndex = 0
+            mainTabBarController.presentedViewController?.dismiss(animated: true, completion: nil)
+            
+            if let homeNavController = mainTabBarController.viewControllers?.first as? UINavigationController {
+                homeNavController.pushViewController(userProfileVC, animated: true)
+                
+            } else {
+                return
+            }
+        } else {
+            return
+        }
+    }
+    
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        print("REGISTERED")
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
